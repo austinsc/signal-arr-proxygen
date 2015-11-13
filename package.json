@@ -29,7 +29,7 @@
   },
   "babel": {
     "modules": "common",
-    "compact": true,
-    "comments": false
+    "compact": false,
+    "comments": true
   }
 }
