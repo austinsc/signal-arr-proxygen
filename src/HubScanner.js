@@ -1,6 +1,6 @@
 import edge from 'edge';
 
-export const scan = edge.func(function() {/*
+export const reflect = edge.func(function() {/*
 #r "System.Reflection.dll"
 using System;
 using System.IO;
@@ -72,4 +72,13 @@ public class Startup
     }
 }
 */
+});
+
+export const scan = (args) => new Promise((resolve, reject) => {
+  reflect(args, (error, result) => {
+    if(error){
+      return reject(error);
+    }
+    resolve(result);
+  });
 });
