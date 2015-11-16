@@ -38,6 +38,9 @@ var reflect = _edge2['default'].func(function () {/*
                                                   }
                                                   public async Task<object> Invoke(object input)
                                                   {
+                                                  var extension = "." + input.ToString().Split(new [] {'.'}).Last();
+                                                  if(string.IsNullOrEmpty(extension))
+                                                  extension = ".dll";
                                                   AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) =>
                                                   {
                                                   try
@@ -48,7 +51,7 @@ var reflect = _edge2['default'].func(function () {/*
                                                   {
                                                   try
                                                   {
-                                                  var path = Path.Combine(Path.GetDirectoryName(input.ToString()) ?? "", args.Name.Split(new [] {','})[0] + ".dll");
+                                                  var path = Path.Combine(Path.GetDirectoryName(input.ToString()) ?? "", args.Name.Split(new [] {','})[0] + extension);
                                                   return Assembly.ReflectionOnlyLoadFrom(path);
                                                   }
                                                   catch

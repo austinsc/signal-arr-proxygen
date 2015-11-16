@@ -32,6 +32,9 @@ public class Startup
 
     public async Task<object> Invoke(object input)
     {
+        var extension = "." + input.ToString().Split(new [] {'.'}).Last();
+        if(string.IsNullOrEmpty(extension))
+            extension = ".dll";
         AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) =>
         {
             try
@@ -42,7 +45,7 @@ public class Startup
             {
                 try
                 {
-                    var path = Path.Combine(Path.GetDirectoryName(input.ToString()) ?? "", args.Name.Split(new [] {','})[0] + ".dll");
+                    var path = Path.Combine(Path.GetDirectoryName(input.ToString()) ?? "", args.Name.Split(new [] {','})[0] + extension);
                     return Assembly.ReflectionOnlyLoadFrom(path);
                 }
                 catch

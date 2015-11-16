@@ -21,10 +21,13 @@ var argv = require('yargs')
 
 if(argv.json) {
   scan(argv.a)
-    .then(result => console.log(JSON.stringify(result)));
+    .then(result => console.log(JSON.stringify(result)))
+    .catch(console.error);
 } else {
   scan(argv.a)
-    .then(result => console.log(prettyjson.render(result)));
+    .then(result => console.log(prettyjson.render(result)))
+    .catch(console.error);
+
 
 
   var fonts = new Font({

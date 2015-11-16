@@ -21,11 +21,11 @@ var argv = require('yargs').usage('Usage: $0 <command> [options]').example('$0 -
 if (argv.json) {
   (0, _HubScanner.scan)(argv.a).then(function (result) {
     return console.log(JSON.stringify(result));
-  });
+  })['catch'](console.error);
 } else {
   (0, _HubScanner.scan)(argv.a).then(function (result) {
     return console.log(_prettyjson2['default'].render(result));
-  });
+  })['catch'](console.error);
 
   var fonts = new _cfonts2['default']({
     'text': 'signal-arr', //text to be converted
