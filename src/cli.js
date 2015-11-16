@@ -36,7 +36,7 @@ let argv = yargs
   .wrap(yargs.terminalWidth())
   .argv;
 
-console.dir(argv);
+//console.dir(argv);
 
 const command = argv._[0];
 const assembly = argv._[1];
@@ -54,14 +54,25 @@ switch(command) {
   case 'code':
     switch(argv.t) {
       case 'redux-classic':
-        let template = require('./ReduxClassicTemplate');
+        const reduxClassic = require('./ReduxClassicTemplate');
         promise = promise
           .then(result => {
-            let templatized = result.map(x => Object.assign(x, { r: template(x)}))
+            let templatized = result.map(x => Object.assign(x, { r: reduxClassic(x)}));
             return argv.f
               ? templatized.map(y => y.r).join('\r\n')
               : templatized;
           });
+        break;
+      case 'redux':
+        const redux = require('./ReduxTemplate');
+        promise = promise
+          .then(result => {
+            let templatized = result.map(x => Object.assign(x, { r: redux(x)}));
+            return argv.f
+              ? templatized.map(y => y.r).join('\r\n')
+              : templatized;
+          });
+        break;
     }
     break;
 }
@@ -75,7 +86,10 @@ if(argv.f) {
     .then(results => Promise.all(results.map(x => writeFile(command, argv.d + x.Name + ext, x.r))));
 } else {
   promise = promise
-    .then(console.log);
+    .then(results => {
+      results.forEach(x => x.r.split('\r\n').forEach(y => console.log(y)));
+      return results;
+    });
 }
 
 promise
