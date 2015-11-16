@@ -52,6 +52,17 @@ switch(command) {
       .then(result => argv.f ? JSON.stringify(result, null, 2) : result.map(x => Object.assign(x, { r: JSON.stringify(x, null, 2)})));
     break;
   case 'code':
+    switch(argv.t) {
+      case 'redux-classic':
+        let template = require('./ReduxClassicTemplate');
+        promise = promise
+          .then(result => {
+            let templatized = result.map(x => Object.assign(x, { r: template(x)}))
+            return argv.f
+              ? templatized.map(y => y.r).join('\r\n')
+              : templatized;
+          });
+    }
     break;
 }
 

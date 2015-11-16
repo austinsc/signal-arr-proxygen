@@ -32,8 +32,8 @@ public class Startup
 
     public async Task<object> Invoke(object input)
     {
-        var extension = "." + input.ToString().Split(new [] {'.'}).Last();
-        if(string.IsNullOrEmpty(extension))
+                var extension = "." + input.ToString().Split(new[] { '.' }).Last();
+        if (string.IsNullOrEmpty(extension))
             extension = ".dll";
         AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) =>
         {
@@ -45,7 +45,7 @@ public class Startup
             {
                 try
                 {
-                    var path = Path.Combine(Path.GetDirectoryName(input.ToString()) ?? "", args.Name.Split(new [] {','})[0] + extension);
+                    var path = Path.Combine(Path.GetDirectoryName(input.ToString()) ?? "", args.Name.Split(new[] { ',' })[0] + extension);
                     return Assembly.ReflectionOnlyLoadFrom(path);
                 }
                 catch
@@ -61,12 +61,12 @@ public class Startup
         return ass.DefinedTypes.Where(x => IsDerivedOfGenericType(x, hubGenericType)).Select(x => new Hub
         {
             Name = x.Name,
-            Server = x.DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic).Select(y => new Method
+            Server = x.DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray()
             }).ToArray(),
-            Client = x.BaseType.GenericTypeArguments.First().GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic).Select(y => new Method
+            Client = x.BaseType.GenericTypeArguments.First().GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray()

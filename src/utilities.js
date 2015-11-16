@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import fs from 'fs';
 
 export function writeFile(command, file, data) {
@@ -16,4 +17,8 @@ export function writeFile(command, file, data) {
       });
     });
   }
+}
+
+export function toUpperUnderscore(str) {
+  return _.snakeCase(str).toUpperCase();
 }

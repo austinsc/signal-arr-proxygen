@@ -67,7 +67,7 @@ function _generateSelfRegistration(hub) {
     return `  client.${camelAction} = (${args}) => dispatch(${camelAction}(${args}));`
   }).join('\r\n');
   return [
-    `export function ${camelHub}(client, dispatch) {`,
+    `export function ${camelHub}(dispatch) {`,
     assignments,
     `}`
   ].join('\r\n');
@@ -100,7 +100,7 @@ export default function(hub, isCreate) {
     `// Self Registration`,
     `${_generateSelfRegistration(hub)}`,
     '',
-    `/** END ${hub.Name} **/`,
+    `/** End ${hub.Name} **/`,
     ''
   ].join('\r\n');
 }
