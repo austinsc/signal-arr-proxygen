@@ -70,7 +70,7 @@ let argv = yargs
   .argv;
 
 if(argv._.length !== 2) {
-  var fonts = new Font({
+  const fonts = new Font({
     'text': 'signal-arr', //text to be converted
     'font': 'block', //define the font face
     'colors': ['red', 'white'], //define all colors
@@ -85,8 +85,6 @@ if(argv._.length !== 2) {
   argv.command = argv._[0];
   argv.assembly = argv._[1];
 
-  console.log(argv);
-
-  //processor(argv);
+  processor(argv);
 }
 
