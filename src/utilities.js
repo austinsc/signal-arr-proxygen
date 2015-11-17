@@ -1,15 +1,16 @@
 import _ from 'lodash';
 import fs from 'fs';
 
-export function writeFile(command, file, data, section) {
+export function writeFile(argv, file, data, section) {
+  const {readFile, print, writeFile, op} = argv;
   let regex = /^\/\*\* Start \w* \*\*\/$\r?\n[\s\S]*\/\*\* End \w* \*\*\//m;
   if(section) {
     regex = `/^\/\*\* Start ${section} \*\*\/$\r?\n[\s\S]*\/\*\* End ${section} \*\*\//m`;
   }
   return new Promise((resolve, reject) => {
-    if(command === 'code' && fs.existsSync(file)) {
+    if(op === 'update') {
       // Update
-      fs.readFile(file, (err, buffer) => {
+      readFile(file, (err, buffer) => {
         if(err) {
           return reject(err);
         }
@@ -21,8 +22,8 @@ export function writeFile(command, file, data, section) {
             return reject(`Unable to update ${file}, existing content not found.`)
           }
         }
-        console.log(`Writing ${file}...`);
-        fs.writeFile(file, data, err => {
+        print(`Writing ${file}...`);
+        writeFile(file, data, err => {
           if(err) {
             return reject(err);
           }
@@ -31,8 +32,8 @@ export function writeFile(command, file, data, section) {
       });
     } else {
       // Create
-      console.log(`Writing ${file}...`);
-      fs.writeFile(file, data, err => {
+      print(`Writing ${file}...`);
+      writeFile(file, data, err => {
         if(err) {
           return reject(err);
         }
@@ -48,7 +49,7 @@ export function toUpperUnderscore(str) {
 
 const isFileExp = /\.(js|json)+$/img;
 
-export function checkOutput(argv, options) {
+export function checkOutput(argv) {
   if(argv.output) {
     try {
       const stat = fs.statSync(argv.output);

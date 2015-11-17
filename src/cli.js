@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import Font from 'cfonts';
 import prettyjson from 'prettyjson';
@@ -63,7 +64,8 @@ let argv = yargs
       .wrap(yargs.terminalWidth())
       .check(checkOutput)
   )
-  .help('help')
+  .help('h')
+  .alias('h', 'help')
   .epilog('For more information, go to https://github.com/RoviSys/signal-arr')
   .locale('pirate')
   .wrap(yargs.terminalWidth())
@@ -79,13 +81,16 @@ if(argv._.length !== 2) {
     'space': true, //define if the output text should have empty lines on top and on the bottom
     'maxLength': '10' //define how many character can be on one line
   });
-
-  yargs.showHelp('log');
+  // TODO: add the interactive stuff here
 } else {
   argv.command = argv._[0];
   argv.assembly = argv._[1];
-  //console.dir(require('util').inspect(argv));
+  argv.print = console.log;
+  argv.writeFile = fs.writeFile;
+  argv.readFile = fs.readFile;
   console.dir(argv);
-  //processor(argv);
+
+
+  processor(argv).catch(console.error);
 }
 
