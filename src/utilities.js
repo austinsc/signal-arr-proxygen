@@ -45,3 +45,31 @@ export function writeFile(command, file, data, section) {
 export function toUpperUnderscore(str) {
   return _.snakeCase(str).toUpperCase();
 }
+
+const isFileExp = /\.(js|json)+$/img;
+
+export function checkOutput(argv, options) {
+  if(argv.output) {
+    try {
+      const stat = fs.statSync(argv.output);
+      // Update
+      argv.op = 'update';
+      argv.mode = stat.isFile()
+        ? 'single'
+        : 'multiple';
+    } catch(err) {
+      // Create
+      if(err.code === 'ENOENT'){
+        argv.op = 'create';
+        argv.mode = argv.output.match(isFileExp)
+          ? 'single'
+          : 'multiple';
+      } else {
+        throw err;
+      }
+    }
+    return true;
+  } else {
+    throw new Error('Avast! There be no output booty to plunder! (you didn\'t specify an output parameter -o --output)')
+  }
+}

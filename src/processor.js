@@ -9,16 +9,16 @@ export default function(argv) {
       promise = promise
         .then(result => argv.outfile ? prettyjson.render(result) : result.map(x => Object.assign(x, {r: prettyjson.render(x)})));
       break;
-    case 'json':
-      promise = promise
-        .then(result => argv.outfile ? JSON.stringify(result, null, 2) : result.map(x => Object.assign(x, {r: JSON.stringify(x, null, 2)})));
-      break;
     case 'code':
       let options = {
         clientVar: argv.hubvar,
         pathToClient: argv.hubpath
       };
       switch(argv.template) {
+        case 'json':
+          promise = promise
+            .then(result => argv.outfile ? JSON.stringify(result, null, 2) : result.map(x => Object.assign(x, {r: JSON.stringify(x, null, 2)})));
+          break;
         case 'redux-classic':
           const reduxClassic = require('./ReduxClassicTemplate');
           promise = promise

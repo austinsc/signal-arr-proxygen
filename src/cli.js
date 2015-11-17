@@ -3,65 +3,65 @@ import Font from 'cfonts';
 import prettyjson from 'prettyjson';
 import yargs from 'yargs';
 import processor from './processor';
-
-const outputOptions = {
-  'f': {
-    alias: 'outfile',
-    demand: false,
-    describe: 'Specify a file to stream the output. ',
-    type: 'string'
-  },
-  'd': {
-    alias: 'outdir',
-    demand: true,
-    describe: 'Specify directory to stream the output. Separate files will be created/updated for each proxy generated. ',
-    type: 'string'
-  }
-};
+import {checkOutput} from './utilities';
 
 let argv = yargs
   .usage('Usage: $0 <command> <assembly> [options]')
-  .command('scan', 'scans the specified .NET assembly and prints the results to the console')
-  .command('json', 'generate a JSON file that describes the specified .NET assembly',
+  .command('scan', 'scans the specified .NET assembly and prints the results to the console',
     y => y
-      .options(outputOptions)
       .wrap(yargs.terminalWidth())
   )
-  .command('code', 'generate a javascript source code file that describes the specified .NET assembly',
-    y => y.options(Object.assign({
-      't': {
-        alias: 'template',
-        demand: true,
-        default: 'redux',
-        describe: 'the template to use to generate the source code files',
-        type: 'string',
-        choices: ['redux', 'redux-classic']
-      },
-      'u': {
-        alias: 'huburl',
-        demand: false,
-        describe: 'Also generate a hub client with the given url.',
-        type: 'string',
-        group: 'Me Code Generation Options: '
-      },
-      'p': {
-        alias: 'hubpath',
-        demand: false,
-        default: './Client',
-        describe: 'The relative path to the hub client module',
-        type: 'string',
-        group: 'Me Code Generation Options: '
-      },
-      'v': {
-        alias: 'hubvar',
-        demand: false,
-        default: '$0',
-        describe: 'The name of the exported mumbo jumbo',
-        type: 'string',
-        group: 'Me Code Generation Options: '
-      }
-    }, outputOptions))
-    .wrap(yargs.terminalWidth())
+  .command('generate', 'generates output using the specified formatter that describes the .NET assembly',
+    y => y
+      .options({
+        'o': {
+          alias: 'output',
+          demand: true,
+          describe: 'the destination (the path to the file, directory, or console)',
+          type: 'string'
+        },
+        'f': {
+          alias: 'format',
+          demand: true,
+          default: 'json',
+          describe: 'the formatter used to produce the output',
+          type: 'string',
+          choices: ['json', 'redux', 'redux-classic']
+        },
+        'u': {
+          alias: 'huburl',
+          demand: false,
+          default: '/signalr',
+          describe: 'Also generate a hub client with the given url.',
+          type: 'string',
+          group: 'Me Code Generation Options: '
+        },
+        'p': {
+          alias: 'hubpath',
+          demand: false,
+          default: './Client',
+          describe: 'The relative path to the hub client module',
+          type: 'string',
+          group: 'Me Code Generation Options: '
+        },
+        'v': {
+          alias: 'hubvar',
+          demand: false,
+          default: '$0',
+          describe: 'The name of the exported mumbo jumbo',
+          type: 'string',
+          group: 'Me Code Generation Options: '
+        },
+        'w': {
+          alias: 'watch',
+          demand: false,
+          default: false,
+          describe: 'enable this option to watch the target assembly for changes, and re-run the update once it has completed',
+          type: 'bool'
+        }
+      })
+      .wrap(yargs.terminalWidth())
+      .check(checkOutput)
   )
   .help('help')
   .epilog('For more information, go to https://github.com/RoviSys/signal-arr')
@@ -84,7 +84,8 @@ if(argv._.length !== 2) {
 } else {
   argv.command = argv._[0];
   argv.assembly = argv._[1];
-
-  processor(argv);
+  //console.dir(require('util').inspect(argv));
+  console.dir(argv);
+  //processor(argv);
 }
 
