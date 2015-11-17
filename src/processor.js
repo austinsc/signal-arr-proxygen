@@ -1,5 +1,4 @@
 import path from 'path';
-import Font from 'cfonts';
 import {writeFile} from './utilities';
 import {scan} from './HubScanner';
 
@@ -44,17 +43,6 @@ export default function(argv) {
       break;
   }
 
-  if(argv['output-file'] || argv['output-dir']) {
-    var fonts = new Font({
-      'text': 'signal-arr', //text to be converted
-      'font': 'block', //define the font face
-      'colors': '', //define all colors
-      'background': 'Black', //define the background color
-      'letterSpacing': 1, //define letter spacing
-      'space': true, //define if the output text should have empty lines on top and on the bottom
-      'maxLength': '10' //define how many character can be on one line
-    });
-  }
   if(argv['hub-client-url']) {
     // TODO: Implement a Hub Client generator
   }
