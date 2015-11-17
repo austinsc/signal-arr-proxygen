@@ -1,3 +1,4 @@
+import path from 'path';
 import Font from 'cfonts';
 import {writeFile} from './utilities';
 import {scan} from './HubScanner';
@@ -64,7 +65,7 @@ export default function(argv) {
   } else if(argv['output-dir']) {
     const ext = argv.command === 'json' ? '.json' : '.js';
     promise = promise
-      .then(results => Promise.all(results.map(x => writeFile(argv.command, argv['output-dir'] + x.Name + ext, x.r))));
+      .then(results => Promise.all(results.map(x => writeFile(argv.command, path.join(argv['output-dir'], x.Name + ext), x.r))));
   } else {
     promise = promise
       .then(results => {
