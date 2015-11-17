@@ -40,6 +40,26 @@ var argv = _yargs2['default'].usage('Usage: $0 <command> <assembly> [options]').
   demand: false,
   describe: 'Specify directory to stream the output. Separate files will be created/updated for each proxy generated. ',
   type: 'string'
+}).option('h', {
+  alias: 'hub-client-url',
+  demand: false,
+  describe: 'Also generate a hub client with the given url.',
+  type: 'string',
+  group: 'Me Code Generation Options: '
+}).implies('h', 'd').option('p', {
+  alias: 'path-to-hub-client',
+  demand: false,
+  'default': './Client',
+  describe: 'The relative path to the hub client module',
+  type: 'string',
+  group: 'Me Code Generation Options: '
+}).option('c', {
+  alias: 'hub-client-var',
+  demand: false,
+  'default': '$0',
+  describe: 'The name of the exported mumbo jumbo',
+  type: 'string',
+  group: 'Me Code Generation Options: '
 }).help('help').epilog('For more information, go to https://github.com/RoviSys/signal-arr').locale('pirate').wrap(_yargs2['default'].terminalWidth()).argv;
 
 //console.dir(argv);
@@ -64,12 +84,16 @@ switch (command) {
     });
     break;
   case 'code':
+    var options = {
+      clientVar: argv.c,
+      pathToClient: argv.p
+    };
     switch (argv.t) {
       case 'redux-classic':
         var reduxClassic = require('./ReduxClassicTemplate');
         promise = promise.then(function (result) {
           var templatized = result.map(function (x) {
-            return Object.assign(x, { r: reduxClassic(x) });
+            return Object.assign(x, { r: reduxClassic(x, options) });
           });
           return argv.f ? templatized.map(function (y) {
             return y.r;
@@ -80,7 +104,7 @@ switch (command) {
         var redux = require('./ReduxTemplate');
         promise = promise.then(function (result) {
           var templatized = result.map(function (x) {
-            return Object.assign(x, { r: redux(x) });
+            return Object.assign(x, { r: redux(x, options) });
           });
           return argv.f ? templatized.map(function (y) {
             return y.r;
@@ -102,6 +126,7 @@ if (argv.f || argv.d) {
     'maxLength': '10' //define how many character can be on one line
   });
 }
+if (argv.h) {}
 
 if (argv.f) {
   promise = promise.then(function (result) {

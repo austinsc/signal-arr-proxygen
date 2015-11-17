@@ -30,6 +30,30 @@ let argv = yargs
     describe: 'Specify directory to stream the output. Separate files will be created/updated for each proxy generated. ',
     type: 'string'
   })
+  .option('h', {
+    alias: 'hub-client-url',
+    demand: false,
+    describe: 'Also generate a hub client with the given url.',
+    type: 'string',
+    group: 'Me Code Generation Options: '
+  })
+  .implies('h', 'd')
+  .option('p', {
+    alias: 'path-to-hub-client',
+    demand: false,
+    default: './Client',
+    describe: 'The relative path to the hub client module',
+    type: 'string',
+    group: 'Me Code Generation Options: '
+  })
+  .option('c', {
+    alias: 'hub-client-var',
+    demand: false,
+    default: '$0',
+    describe: 'The name of the exported mumbo jumbo',
+    type: 'string',
+    group: 'Me Code Generation Options: '
+  })
   .help('help')
   .epilog('For more information, go to https://github.com/RoviSys/signal-arr')
   .locale('pirate')
@@ -40,6 +64,7 @@ let argv = yargs
 
 const command = argv._[0];
 const assembly = argv._[1];
+
 
 let promise = scan(assembly);
 switch(command) {
@@ -52,12 +77,16 @@ switch(command) {
       .then(result => argv.f ? JSON.stringify(result, null, 2) : result.map(x => Object.assign(x, { r: JSON.stringify(x, null, 2)})));
     break;
   case 'code':
+    let options = {
+      clientVar: argv.c,
+      pathToClient: argv.p
+    };
     switch(argv.t) {
       case 'redux-classic':
         const reduxClassic = require('./ReduxClassicTemplate');
         promise = promise
           .then(result => {
-            let templatized = result.map(x => Object.assign(x, { r: reduxClassic(x)}));
+            let templatized = result.map(x => Object.assign(x, { r: reduxClassic(x, options)}));
             return argv.f
               ? templatized.map(y => y.r).join('\r\n')
               : templatized;
@@ -67,7 +96,7 @@ switch(command) {
         const redux = require('./ReduxTemplate');
         promise = promise
           .then(result => {
-            let templatized = result.map(x => Object.assign(x, { r: redux(x)}));
+            let templatized = result.map(x => Object.assign(x, { r: redux(x, options)}));
             return argv.f
               ? templatized.map(y => y.r).join('\r\n')
               : templatized;
@@ -88,7 +117,9 @@ if(argv.f || argv.d) {
     'maxLength': '10' //define how many character can be on one line
   });
 }
+if(argv.h) {
 
+}
 
 if(argv.f) {
   promise = promise
