@@ -3,8 +3,10 @@ import {writeFile} from './utilities';
 import {scan} from './HubScanner';
 
 export default function(argv) {
+  argv.print(`Scanning ${argv.assembly}...`);
   let promise = scan(argv.assembly);
 
+  argv.print(`Generating output...`);
   switch(argv.format) {
     case 'json':
       promise = promise

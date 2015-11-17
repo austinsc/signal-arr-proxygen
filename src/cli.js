@@ -8,6 +8,7 @@ import {checkOutput} from './utilities';
 
 let argv = yargs
   .usage('Usage: $0 <command> <assembly> [options]')
+  .command('interactive', 'runs the utility in interactive (Q & A) mode.')
   .command('scan', 'scans the specified .NET assembly and prints the results to the console',
     y => y
       .wrap(yargs.terminalWidth())
@@ -58,7 +59,7 @@ let argv = yargs
           demand: false,
           default: false,
           describe: 'enable this option to watch the target assembly for changes, and re-run the update once it has completed',
-          type: 'bool'
+          type: 'boolean'
         }
       })
       .wrap(yargs.terminalWidth())
@@ -71,26 +72,19 @@ let argv = yargs
   .wrap(yargs.terminalWidth())
   .argv;
 
-if(argv._.length !== 2) {
-  const fonts = new Font({
-    'text': 'signal-arr', //text to be converted
-    'font': 'block', //define the font face
-    'colors': ['red', 'white'], //define all colors
-    'background': 'Black', //define the background color
-    'letterSpacing': 1, //define letter spacing
-    'space': true, //define if the output text should have empty lines on top and on the bottom
-    'maxLength': '10' //define how many character can be on one line
-  });
-  // TODO: add the interactive stuff here
+if(argv._.length < 2) {
+  new Font({ text: ' signal-arr', colors: ['red', 'white'], maxLength: '11' });
+  yargs.showHelp('log');
 } else {
   argv.command = argv._[0];
   argv.assembly = argv._[1];
   argv.print = console.log;
   argv.writeFile = fs.writeFile;
   argv.readFile = fs.readFile;
-  console.dir(argv);
-
-
-  processor(argv).catch(console.error);
+  if(argv.command === 'interactive') {
+    // TODO: implement interactive mode
+  } else {
+    processor(argv).catch(console.error);
+  }
 }
 
