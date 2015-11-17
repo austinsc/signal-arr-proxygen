@@ -77,6 +77,19 @@ switch(command) {
     break;
 }
 
+if(argv.f || argv.d) {
+  var fonts = new Font({
+    'text': 'signal-arr', //text to be converted
+    'font': 'block', //define the font face
+    'colors': '', //define all colors
+    'background': 'Black', //define the background color
+    'letterSpacing': 1, //define letter spacing
+    'space': true, //define if the output text should have empty lines on top and on the bottom
+    'maxLength': '10' //define how many character can be on one line
+  });
+}
+
+
 if(argv.f) {
   promise = promise
     .then(result => writeFile(command, path.normalize(argv.f), result));
@@ -94,25 +107,3 @@ if(argv.f) {
 
 promise
   .catch(console.error);
-
-//
-//if(argv.json) {
-//  scan(argv.a)
-//    .then(result => console.log(JSON.stringify(result)))
-//    .catch(console.error);
-//} else {
-//  scan(argv.a)
-//    .then(result => console.log(prettyjson.render(result)))
-//    .catch(console.error);
-//
-//
-//  var fonts = new Font({
-//    'text': 'signal-arr', //text to be converted
-//    'font': 'block', //define the font face
-//    'colors': '', //define all colors
-//    'background': 'Black', //define the background color
-//    'letterSpacing': 1, //define letter spacing
-//    'space': true, //define if the output text should have empty lines on top and on the bottom
-//    'maxLength': '10' //define how many character can be on one line
-//  });
-//}
