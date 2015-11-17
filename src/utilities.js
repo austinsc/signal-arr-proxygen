@@ -2,6 +2,9 @@ import _ from 'lodash';
 import fs from 'fs';
 
 export function writeFile(argv, file, data, section) {
+  if(!data) {
+    throw new Error('No data to write');
+  }
   const {readFile, print, writeFile, op} = argv;
   let regex = /^\/\*\* Start \w* \*\*\/$\r?\n[\s\S]*\/\*\* End \w* \*\*\//m;
   if(section) {
@@ -56,19 +59,26 @@ export function checkOutput(argv) {
       // Update
       argv.op = 'update';
       argv.mode = stat.isFile()
-        ? 'single'
-        : 'multiple';
+        ? 'file'
+        : 'dir';
     } catch(err) {
       // Create
       if(err.code === 'ENOENT'){
         argv.op = 'create';
         argv.mode = argv.output.match(isFileExp)
-          ? 'single'
-          : 'multiple';
+          ? 'file'
+          : 'dir';
       } else {
         throw err;
       }
     }
+
+    if(argv.format === 'json' && argv.mode !== 'file') {
+      throw new Error('--output must be a file name and not a directory when the format mode is json');
+    } else if(argv.format !== 'json' && argv.mode === 'file') {
+      throw new Error('--output must be a directory and not a file name unless the format mode is json');
+    }
+
     return true;
   } else {
     throw new Error('Avast! There be no output booty to plunder! (you didn\'t specify an output parameter -o --output)')
