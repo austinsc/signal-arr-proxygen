@@ -7,24 +7,24 @@ export default function(argv) {
   switch(argv.command) {
     case 'scan':
       promise = promise
-        .then(result => argv.f ? prettyjson.render(result) : result.map(x => Object.assign(x, {r: prettyjson.render(x)})));
+        .then(result => argv['output-file'] ? prettyjson.render(result) : result.map(x => Object.assign(x, {r: prettyjson.render(x)})));
       break;
     case 'json':
       promise = promise
-        .then(result => argv.f ? JSON.stringify(result, null, 2) : result.map(x => Object.assign(x, {r: JSON.stringify(x, null, 2)})));
+        .then(result => argv['output-file'] ? JSON.stringify(result, null, 2) : result.map(x => Object.assign(x, {r: JSON.stringify(x, null, 2)})));
       break;
     case 'code':
       let options = {
-        clientVar: argv.c,
-        pathToClient: argv.p
+        clientVar: argv['hub-client-var'],
+        pathToClient: argv['path-to-hub-client']
       };
-      switch(argv.t) {
+      switch(argv.template) {
         case 'redux-classic':
           const reduxClassic = require('./ReduxClassicTemplate');
           promise = promise
             .then(result => {
               let templatized = result.map(x => Object.assign(x, {r: reduxClassic(x, options)}));
-              return argv.f
+              return argv['output-file']
                 ? templatized.map(y => y.r).join('\r\n')
                 : templatized;
             });
@@ -34,7 +34,7 @@ export default function(argv) {
           promise = promise
             .then(result => {
               let templatized = result.map(x => Object.assign(x, {r: redux(x, options)}));
-              return argv.f
+              return argv['output-file']
                 ? templatized.map(y => y.r).join('\r\n')
                 : templatized;
             });
@@ -43,7 +43,7 @@ export default function(argv) {
       break;
   }
 
-  if(argv.f || argv.d) {
+  if(argv['output-file'] || argv['output-dir']) {
     var fonts = new Font({
       'text': 'signal-arr', //text to be converted
       'font': 'block', //define the font face
@@ -54,17 +54,17 @@ export default function(argv) {
       'maxLength': '10' //define how many character can be on one line
     });
   }
-  if(argv.h) {
+  if(argv['hub-client-url']) {
     // TODO: Implement a Hub Client generator
   }
 
-  if(argv.f) {
+  if(argv['output-file']) {
     promise = promise
-      .then(result => writeFile(argv.command, path.normalize(argv.f), result));
-  } else if(argv.d) {
+      .then(result => writeFile(argv.command, path.normalize(argv['output-file']), result));
+  } else if(argv['output-dir']) {
     const ext = argv.command === 'json' ? '.json' : '.js';
     promise = promise
-      .then(results => Promise.all(results.map(x => writeFile(argv.command, argv.d + x.Name + ext, x.r))));
+      .then(results => Promise.all(results.map(x => writeFile(argv.command, argv['output-dir'] + x.Name + ext, x.r))));
   } else {
     promise = promise
       .then(results => {
