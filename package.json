@@ -8,8 +8,9 @@
     "build": "./node_modules/.bin/babel src -s -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": "https://github.com/RoviSys/signal-arr-proxygen",
   "bin": "bin/proxygen.js",
-  "author": "",
+  "author": "Stephen C. Austin (RoviSys)",
   "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.0.16",
