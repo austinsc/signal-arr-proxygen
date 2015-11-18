@@ -7,12 +7,12 @@ function _generateActionTypes(hubName, methods, server) {
     const upper = toUpperUnderscore(x.Name);
     if(server) {
       return [
-        `export const ${upper}_REQUEST = ${hubUpper}::${upper}_REQUEST;`,
-        `export const ${upper}_RESPONSE = ${hubUpper}::${upper}_RESPONSE;`,
-        `export const ${upper}_ERROR = ${hubUpper}::${upper}_ERROR;`
+        `export const ${upper}_REQUEST = '${hubUpper}::${upper}_REQUEST';`,
+        `export const ${upper}_RESPONSE = '${hubUpper}::${upper}_RESPONSE';`,
+        `export const ${upper}_ERROR = '${hubUpper}::${upper}_ERROR';`
       ].join('\r\n');
     } else {
-      return `export const ${upper} = ${hubUpper}::${upper};`;
+      return `export const ${upper} = '${hubUpper}::${upper}';`;
     }
   }).join('\r\n');
 }
