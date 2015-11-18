@@ -43,7 +43,7 @@ function _generateActionCreators(hubName, methods, server, proxy) {
         `      ${camelAction}Error: (error) => dispatch(${camelAction}Error(error))`,
         `    };`,
         `    bound.${camelAction}Request(${args});`,
-        `    ${proxy}.Invoke(${hubName}`,
+        `    ${proxy}.Invoke(${hubName})`,
         `      .then(bound.${camelAction}Response)`,
         `      .catch(bound.${camelAction}Error);`,
         `  };`,

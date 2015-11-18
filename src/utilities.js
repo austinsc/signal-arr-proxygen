@@ -54,6 +54,9 @@ const isFileExp = /\.(js|json)+$/img;
 
 export function checkOutput(argv) {
   if(argv.output) {
+    if(argv.output === 'console') {
+      return true;
+    }
     try {
       const stat = fs.statSync(argv.output);
       // Update
@@ -63,7 +66,7 @@ export function checkOutput(argv) {
         : 'dir';
     } catch(err) {
       // Create
-      if(err.code === 'ENOENT'){
+      if(err.code === 'ENOENT') {
         argv.op = 'create';
         argv.mode = argv.output.match(isFileExp)
           ? 'file'

@@ -51,7 +51,11 @@ export default function(argv) {
         } else if(argv.format === 'json') {
           argv.print(cardinal.highlight(results.r, {json: true, linenos: true}));
         } else {
-          results.forEach(x => argv.print(cardinal.highlight(x.r, {linenos: true})));
+          try{
+            results.forEach(x => argv.print(cardinal.highlight(x.r, {linenos: true})));
+          } catch (err) {
+            results.forEach(x => argv.print(x.r));
+          }
         }
         return results;
       });

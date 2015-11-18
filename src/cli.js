@@ -20,6 +20,7 @@ let argv = yargs
         'o': {
           alias: 'output',
           demand: true,
+          default: 'console',
           describe: 'the destination (the path to the file, directory, or console)',
           type: 'string'
         },
