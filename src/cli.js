@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import Font from 'cfonts';
-import prettyjson from 'prettyjson';
 import yargs from 'yargs';
 import watchr from 'watchr';
 import processor from './processor';
 import {checkOutput} from './utilities';
+import interactive from './interactive';
 
 let argv = yargs
   .usage('Usage: $0 <command> <assembly> [options]')
@@ -83,7 +83,7 @@ if(argv._.length < 2) {
   argv.writeFile = fs.writeFile;
   argv.readFile = fs.readFile;
   if(argv.command === 'interactive') {
-    // TODO: implement interactive mode
+    interactive(argv).catch(console.error);;
   } else {
     if(argv.watch) {
       watchr.watch({

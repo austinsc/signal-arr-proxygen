@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.0.16",
+    "cardinal": "^0.6.0",
     "cfonts": "0.0.13",
     "edge": "^4.0.0",
     "inquirer": "^0.11.0",

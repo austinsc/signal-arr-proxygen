@@ -1,10 +1,15 @@
 import path from 'path';
 import {writeFile} from './utilities';
 import {scan} from './HubScanner';
+import prettyjson from 'prettyjson';
+import cardinal from 'cardinal';
 
 export default function(argv) {
   argv.print(`Scanning ${argv.assembly}...`);
-  let promise = scan(argv.assembly);
+
+  let promise = argv.hubs
+    ? new Promise(resolve => resolve(argv.hubs))
+    : scan(argv.assembly);
 
   argv.print(`Generating output...`);
   switch(argv.format) {
@@ -14,6 +19,15 @@ export default function(argv) {
           return {
             f: argv.output,
             r: JSON.stringify(x, null, 2)
+          };
+        });
+      break;
+    case 'pretty':
+      promise = promise
+        .then(x => {
+          return {
+            f: argv.output,
+            r: prettyjson.render(x)
           };
         });
       break;
@@ -32,7 +46,13 @@ export default function(argv) {
   if(argv.output === 'console') {
     return promise
       .then(results => {
-        results.forEach(x => x.r.split('\r\n').forEach(y => argv.print(y)));
+        if(argv.format === 'pretty') {
+          argv.print(results.r);
+        } else if(argv.format === 'json') {
+          argv.print(cardinal.highlight(results.r, {json: true, linenos: true}));
+        } else {
+          results.forEach(x => argv.print(cardinal.highlight(x.r, {linenos: true})));
+        }
         return results;
       });
   }
