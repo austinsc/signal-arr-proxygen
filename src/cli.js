@@ -3,6 +3,7 @@ import path from 'path';
 import Font from 'cfonts';
 import prettyjson from 'prettyjson';
 import yargs from 'yargs';
+import watchr from 'watchr';
 import processor from './processor';
 import {checkOutput} from './utilities';
 
@@ -73,7 +74,7 @@ let argv = yargs
   .argv;
 
 if(argv._.length < 2) {
-  new Font({ text: ' signal-arr', colors: ['red', 'white'], maxLength: '11' });
+  new Font({text: ' signal-arr', colors: ['red', 'white'], maxLength: '11'});
   yargs.showHelp('log');
 } else {
   argv.command = argv._[0];
@@ -84,6 +85,14 @@ if(argv._.length < 2) {
   if(argv.command === 'interactive') {
     // TODO: implement interactive mode
   } else {
+    if(argv.watch) {
+      watchr.watch({
+        path: argv.assembly,
+        listener() {
+          processor(argv).catch(console.error);
+        }
+      });
+    }
     processor(argv).catch(console.error);
   }
 }
