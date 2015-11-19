@@ -46,6 +46,7 @@ public class Method
 {
     public string Name { get; set; }
     public string[] Arguments { get; set; }
+    public bool Returns { get; set; }
     public Comment Comment { get; set; }
 
 }
@@ -108,13 +109,15 @@ public class Startup
             {
                 Name = y.Name,
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
-                Arguments = y.GetParameters().Select(z => z.Name).ToArray()
+                Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
+                Returns = y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)
             }).ToArray(),
             Client = x.BaseType.GenericTypeArguments.First().GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
+                Returns = y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)
             }).ToArray()
         }).ToArray();
     }
