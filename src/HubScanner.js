@@ -26,6 +26,7 @@ public class Comment
 
     public Comment(XmlDocument doc, string xpath)
     {
+    Console.WriteLine(xpath);
         var summary = doc.SelectSingleNode(xpath + "/summary");
         if(summary != null)
             this.Summary = summary.InnerText.Trim();
@@ -104,7 +105,7 @@ public class Startup
         return ass.DefinedTypes.Where(x => IsDerivedOfGenericType(x, hubGenericType)).Select(x => new Hub
         {
             Name = x.Name,
-            Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "')]"),
+            Comment = new Comment(xml, "//member[@name='T:" + x.FullName + "']"),
             Server = x.DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
@@ -116,7 +117,7 @@ public class Startup
             {
                 Name = y.Name,
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
-                Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
+                Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + y.DeclaringType.FullName + "." + y.Name + "')]"),
                 Returns = y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)
             }).ToArray()
         }).ToArray();
