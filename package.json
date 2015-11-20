@@ -1,6 +1,6 @@
 {
   "name": "signal-arr-proxygen",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "",
   "main": "index.js",
   "scripts": {
