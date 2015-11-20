@@ -50,9 +50,9 @@ export function toUpperUnderscore(str) {
   return _.snakeCase(str).toUpperCase();
 }
 
-const isFileExp = /\.(js|json)+$/img;
+export const FILE_NAME_REGEX = /\.(js|json)+$/img;
 
-export function checkOutput(argv) {
+export function validate(argv) {
   if(argv.output) {
     if(argv.output === 'console') {
       return true;
@@ -68,7 +68,7 @@ export function checkOutput(argv) {
       // Create
       if(err.code === 'ENOENT') {
         argv.op = 'create';
-        argv.mode = argv.output.match(isFileExp)
+        argv.mode = argv.output.match(FILE_NAME_REGEX)
           ? 'file'
           : 'dir';
       } else {

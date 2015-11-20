@@ -126,11 +126,13 @@ public class Startup
 */
 });
 
-export const scan = (args) => new Promise((resolve, reject) => {
-  reflect(args, (error, result) => {
-    if(error){
-      return reject(error);
-    }
-    resolve(result);
+export function scan(assembly) {
+  return new Promise((resolve, reject) => {
+    reflect(assembly, (error, result) => {
+      if(error) {
+        return reject(error);
+      }
+      resolve(result);
+    });
   });
-});
+}

@@ -3,17 +3,13 @@ import path from 'path';
 import Font from 'cfonts';
 import yargs from 'yargs';
 import watchr from 'watchr';
-import processor from './processor';
-import {checkOutput} from './utilities';
+import {processor} from './processor';
+import {validate} from './utilities';
 import interactive from './interactive';
 
 let argv = yargs
   .usage('Usage: $0 <command> <assembly> [options]')
   .command('interactive', 'runs the utility in interactive (Q & A) mode.')
-  .command('scan', 'scans the specified .NET assembly and prints the results to the console',
-    y => y
-      .wrap(yargs.terminalWidth())
-  )
   .command('generate', 'generates output using the specified formatter that describes the .NET assembly',
     y => y
       .options({
@@ -65,7 +61,7 @@ let argv = yargs
         }
       })
       .wrap(yargs.terminalWidth())
-      .check(checkOutput)
+      .check(validate)
   )
   .help('h')
   .alias('h', 'help')
@@ -84,7 +80,7 @@ if(argv._.length < 2) {
   argv.writeFile = fs.writeFile;
   argv.readFile = fs.readFile;
   if(argv.command === 'interactive') {
-    interactive(argv).catch(console.error);;
+    interactive(argv).catch(console.error);
   } else {
     if(argv.watch) {
       watchr.watch({

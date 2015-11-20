@@ -1,7 +1,8 @@
 import fs from 'fs';
 import inquirer from 'inquirer';
-import processor from './processor';
-import {scan} from './HubScanner';
+import {processor} from './processor';
+import {scan} from './scan';
+import {FILE_NAME_REGEX} from './utilities';
 
 
 export default function(argv) {
@@ -57,7 +58,7 @@ export default function(argv) {
             return true;
           } catch(err) {
             if(err.code === 'ENOENT') {
-              const isFile = value.match(/\.(js|json)+$/img);
+              const isFile = value.match(FILE_NAME_REGEX);
               if(answers.format === 'json' && !isFile) {
                 return 'You picked json so you best provide a file name, scallywag. Arrgh!';
               }

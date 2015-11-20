@@ -1,10 +1,13 @@
 import path from 'path';
 import {writeFile} from './utilities';
-import {scan} from './HubScanner';
+import {scan} from './scan';
 import prettyjson from 'prettyjson';
 import cardinal from 'cardinal';
 
-export default function(argv) {
+import redux from './redux';
+import reduxClassic from './redux-classic';
+
+export function processor(argv) {
   argv.print(`Scanning ${argv.assembly}...`);
 
   let promise = argv.hubs
@@ -32,12 +35,10 @@ export default function(argv) {
         });
       break;
     case 'redux-classic':
-      const reduxClassic = require('./ReduxClassicTemplate');
       promise = promise
         .then(result => result.map(x => Object.assign(x, {f: path.join(argv.output, `${x.Name}.js`), r: reduxClassic(x, argv)})));
       break;
     case 'redux':
-      const redux = require('./ReduxTemplate');
       promise = promise
         .then(result => result.map(x => Object.assign(x, {f: path.join(argv.output, `${x.Name}.js`), r: redux(x, argv)})));
       break;

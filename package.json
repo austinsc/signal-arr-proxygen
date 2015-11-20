@@ -1,19 +1,18 @@
 {
   "name": "signal-arr-proxygen",
   "version": "0.0.17",
-  "description": "",
-  "main": "index.js",
+  "description": "Static Javascript Hub Proxy generator tool for use with SignalR",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "./node_modules/.bin/babel src -s -w -d dist",
     "build": "./node_modules/.bin/babel src -s -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/RoviSys/signal-arr-proxygen",
-  "bin": "bin/proxygen.js",
+  "bin": "bin/index.js",
   "author": "Stephen C. Austin (RoviSys)",
   "license": "MIT",
   "dependencies": {
-    "babel-polyfill": "^6.0.16",
     "cardinal": "^0.6.0",
     "cfonts": "0.0.13",
     "edge": "^4.0.0",
@@ -25,13 +24,20 @@
     "yargs": "^3.29.0"
   },
   "devDependencies": {
-    "babel": "^5.8.29",
-    "chai": "^3.4.0",
-    "mocha": "^2.3.3"
+    "babel-core": "^6.2.1",
+    "babel-plugin-react-display-name": "^2.0.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.2.0",
+    "babel-plugin-undeclared-variables-check": "^6.1.18",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-stage-0": "^6.1.18"
   },
   "babel": {
-    "modules": "common",
-    "compact": false,
-    "comments": true
+    "presets": [
+      "es2015",
+      "stage-0"
+    ],
+    "plugins": [
+      "transform-es2015-modules-commonjs"
+    ]
   }
 }
