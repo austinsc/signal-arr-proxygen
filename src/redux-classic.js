@@ -29,7 +29,7 @@ function _generateActionCreators(methods, server) {
         `/**`,
         `* ${comments.Summary}`,
         `* @returns ${comments.Returns}`,
-        `* ${[].map.call(x.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `* ${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
         `*/`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
