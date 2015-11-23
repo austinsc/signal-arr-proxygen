@@ -23,18 +23,38 @@ function _generateActionCreators(methods, server) {
     const camelAction = _.camelCase(upperType);
     const args = x.Arguments.join(', ');
     const sep = (args.length ? ', ' : '');
-
+    const comments = x.Comment;
     if(server) {
       return [
+        `/**`,
+        `* ${comments.Summary}`,
+        `* @returns ${comments.Returns}`,
+        `* ${[].map.call(x.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `*/`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
         `}`,
+        `/**`,
+        `* ${comments.Summary}`,
+        `* @returns ${comments.Returns}`,
+        `${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `*/`,
         `export function ${camelAction}Response(response){`,
         `  return {type: ${upperType}_RESPONSE, response};`,
         `}`,
+        `/**`,
+        `* ${comments.Summary}`,
+        `* @returns ${comments.Returns}`,
+        `* ${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `*/`,
         `export function ${camelAction}Error(error){`,
         `  return {type: ${upperType}_ERROR, error};`,
         `}`,
+        `/**`,
+        `* ${comments.Summary}`,
+        `* @returns ${comments.Returns}`,
+        `* ${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `*/`,
         `export function ${camelAction}(${args}){`,
         `  return (dispatch) => {`,
         `    const bound = {`,
