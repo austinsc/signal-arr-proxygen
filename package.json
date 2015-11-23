@@ -25,19 +25,9 @@
   },
   "devDependencies": {
     "babel-core": "^6.2.1",
-    "babel-plugin-react-display-name": "^2.0.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.2.0",
     "babel-plugin-undeclared-variables-check": "^6.1.18",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-stage-0": "^6.1.18"
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0"
-    ],
-    "plugins": [
-      "transform-es2015-modules-commonjs"
-    ]
   }
 }
