@@ -23,7 +23,7 @@ function _generateMethodComments(method, type) {
     comments.push(`* ${method.Comment.Summary}`)
   }
   if(method.Comment.Returns !== null) {
-    comments.push(`* @returns {${typeof(method.Returns)}} ${method.Returns} ${method.Comment.Returns}`)
+    comments.push(`* @returns {${method.Returns}} ${method.Comment.Returns}`)
   }
   if(method.Comment.Arguments !== null) {
     if(type === 'response' || type === 'error') {

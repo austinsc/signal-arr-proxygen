@@ -33,7 +33,7 @@ public class Comment
         var returns = doc.SelectSingleNode(xpath + "/returns");
         if (returns != null)
             this.Returns = returns.InnerText.Trim();
-        var arguments = doc.SelectSingleNode(xpath + "/params");
+        var arguments = doc.SelectSingleNode(xpath + "/param");
         if(arguments != null)
             this.Arguments = arguments.OfType<XmlNode>().Select(q => new ArgumentComment() { Comment = q.InnerText.Trim(), Name = q.Attributes["name"].Value }).ToArray();
     }
@@ -47,7 +47,7 @@ public class Method
 {
     public string Name { get; set; }
     public string[] Arguments { get; set; }
-    public bool Returns { get; set; }
+    public string Returns { get; set; }
     public Comment Comment { get; set; }
 
 }
@@ -111,14 +111,14 @@ public class Startup
                 Name = y.Name,
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
-                Returns = y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)
+                Returns = (y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)) ? y.ReturnParameter.ParameterType.Name : null
             }).ToArray(),
             Client = x.BaseType.GenericTypeArguments.First().GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + y.DeclaringType.FullName + "." + y.Name + "')]"),
-                Returns = y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)
+                Returns = (y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)) ? y.ReturnParameter.ParameterType.Name : null
             }).ToArray()
         }).ToArray();
     }
