@@ -41,10 +41,14 @@ function _generateMethodComments(method, type) {
         break;
     }
   }
-  if(comments.isEmpty) {
+  if(comments.length > 0) {
+    comments.unshift(`/**`);
+    comments.push(`*/`);
+    return comments.join('\r\n');
+  } else{
     return comments;
   }
-  return comments.join('\r\n');
+
 }
 
 function _generateActionCreators(methods, server) {
@@ -56,27 +60,19 @@ function _generateActionCreators(methods, server) {
     const comments = x.Comment;
     if(server) {
       return [
-        `/**`,
         `${_generateMethodComments(x, 'request')}`,
-        `*/`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
         `}`,
-        `/**`,
         `${_generateMethodComments(x, 'response')}`,
-        `*/`,
         `export function ${camelAction}Response(response){`,
         `  return {type: ${upperType}_RESPONSE, response};`,
         `}`,
-        `/**`,
         `${_generateMethodComments(x, 'error')}`,
-        `*/`,
         `export function ${camelAction}Error(error){`,
         `  return {type: ${upperType}_ERROR, error};`,
         `}`,
-        `/**`,
         `${_generateMethodComments(x, 'dispatch')}`,
-        `*/`,
         `export function ${camelAction}(${args}){`,
         `  return (dispatch) => {`,
         `    const bound = {`,
