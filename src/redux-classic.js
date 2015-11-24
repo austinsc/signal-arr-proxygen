@@ -33,10 +33,7 @@ function _generateMethodComments(method, type) {
       case 'error':
         comments.push(`* @params {string} error ${method.Comment.Arguments}`);
         break;
-      case 'request':
-        comments = comments.concat(([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`)));
-        break;
-      case 'dispatch':
+      case 'variable':
         comments = comments.concat(([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`)));
         break;
     }
@@ -60,7 +57,7 @@ function _generateActionCreators(methods, server) {
     const comments = x.Comment;
     if(server) {
       return [
-        `${_generateMethodComments(x, 'request')}`,
+        `${_generateMethodComments(x, 'variable')}`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
         `}`,
@@ -72,7 +69,7 @@ function _generateActionCreators(methods, server) {
         `export function ${camelAction}Error(error){`,
         `  return {type: ${upperType}_ERROR, error};`,
         `}`,
-        `${_generateMethodComments(x, 'dispatch')}`,
+        `${_generateMethodComments(x, 'variable')}`,
         `export function ${camelAction}(${args}){`,
         `  return (dispatch) => {`,
         `    const bound = {`,
@@ -89,6 +86,7 @@ function _generateActionCreators(methods, server) {
       ].join('\r\n');
     } else {
       return [
+        `${_generateMethodComments(x, 'variable')}`,
         `export function ${camelAction}(${args}){`,
         `  return {type: ${upperType}${sep}${args}};`,
         `}`
