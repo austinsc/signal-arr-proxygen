@@ -20,7 +20,6 @@ function _generateActionTypes(hubName, methods, server) {
 function _generateMethodComments(method, type) {
   let comments = [];
   let argumentComments = [];
-  if(method.Comment !== null) {
     if(method.Comment.Summary !== null) {
       comments.push(`* ${method.Comment.Summary}`)
     }
@@ -34,22 +33,22 @@ function _generateMethodComments(method, type) {
     if(method.Arguments !== null || type !== null) {
         switch(type) {
           case 'response':
-            argumentComments.push(`* @params {string} response ${method.Comment.Arguments || `No argument comment found.`}`);
+            argumentComments.push(`* @params {string} response ${method.Comment.Arguments}`);
             break;
           case 'error':
-            argumentComments.push(`* @params {string} error ${method.Comment.Arguments || `No argument comment found.`}`);
+            argumentComments.push(`* @params {string} error ${method.Comment.Arguments}`);
             break;
           case 'request':
-            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments || `No argument comment found.`}`));
+            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
             break;
           case 'dispatch':
-            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments || `No argument comment found.`}`));
+            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
             break;
         }
       comments = comments.concat(argumentComments);
     }
-  } else {
-    comments.push(` *No comments defined for this method.`);
+  if(comments.isEmpty){
+    comments.push('*');
   }
   return comments.join('\r\n');
 }
@@ -64,25 +63,25 @@ function _generateActionCreators(methods, server) {
     if(server) {
       return [
         `/**`,
-        `${_generateMethodComments(x,'request')}`,
+        `${_generateMethodComments(x, 'request')}`,
         `*/`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
         `}`,
         `/**`,
-        `${_generateMethodComments(x,'response')}`,
+        `${_generateMethodComments(x, 'response')}`,
         `*/`,
         `export function ${camelAction}Response(response){`,
         `  return {type: ${upperType}_RESPONSE, response};`,
         `}`,
         `/**`,
-        `${_generateMethodComments(x,'error')}`,
+        `${_generateMethodComments(x, 'error')}`,
         `*/`,
         `export function ${camelAction}Error(error){`,
         `  return {type: ${upperType}_ERROR, error};`,
         `}`,
         `/**`,
-        `${_generateMethodComments(x,'dispatch')}`,
+        `${_generateMethodComments(x, 'dispatch')}`,
         `*/`,
         `export function ${camelAction}(${args}){`,
         `  return (dispatch) => {`,
