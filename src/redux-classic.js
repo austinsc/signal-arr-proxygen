@@ -20,35 +20,31 @@ function _generateActionTypes(hubName, methods, server) {
 function _generateMethodComments(method, type) {
   let comments = [];
   let argumentComments = [];
-    if(method.Comment.Summary !== null) {
-      comments.push(`* ${method.Comment.Summary}`)
+  if(method.Comment.Summary !== null) {
+    comments.push(`* ${method.Comment.Summary}`)
+  }
+  if(method.Comment.Returns !== null) {
+    comments.push(`* @returns {${typeof(method.Returns)}} ${method.Returns} ${method.Comment.Returns}`)
+  }
+  if(method.Comment.Arguments !== null) {
+    switch(type) {
+      case 'response':
+        argumentComments.push(`* @params {string} response ${method.Comment.Arguments}`);
+        break;
+      case 'error':
+        argumentComments.push(`* @params {string} error ${method.Comment.Arguments}`);
+        break;
+      case 'request':
+        argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
+        break;
+      case 'dispatch':
+        argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
+        break;
     }
-    if(method.Returns) {
-      if(method.Comment.Returns !== null) {
-        comments.push(`* @returns {${typeof(method.Returns)}} ${method.Returns} ${method.Comment.Returns}`)
-      } else {
-        comments.push(`* @returns {${typeof(method.Returns)}} ${method.Returns} No comment found for this return statement.`)
-      }
-    }
-    if(method.Arguments !== null || type !== null) {
-        switch(type) {
-          case 'response':
-            argumentComments.push(`* @params {string} response ${method.Comment.Arguments}`);
-            break;
-          case 'error':
-            argumentComments.push(`* @params {string} error ${method.Comment.Arguments}`);
-            break;
-          case 'request':
-            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
-            break;
-          case 'dispatch':
-            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
-            break;
-        }
-      comments = comments.concat(argumentComments);
-    }
-  if(comments.isEmpty){
-    comments.push('*');
+    comments = comments.concat(argumentComments);
+  }
+  if(comments.isEmpty) {
+    return comments;
   }
   return comments.join('\r\n');
 }
