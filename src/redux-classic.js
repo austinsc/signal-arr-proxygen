@@ -26,23 +26,17 @@ function _generateMethodComments(method, type) {
     comments.push(`* @returns {${typeof(method.Returns)}} ${method.Returns} ${method.Comment.Returns}`)
   }
   if(method.Comment.Arguments !== null) {
-    switch(type) {
-      case 'response':
-        comments.push(`* @params {string} response ${method.Comment.Arguments}`);
-        break;
-      case 'error':
-        comments.push(`* @params {string} error ${method.Comment.Arguments}`);
-        break;
-      case 'variable':
-        comments = comments.concat(([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`)));
-        break;
+    if(type === 'response' || type === 'error') {
+      comments.push(`* @params {string} ${type} ${method.Comment.Arguments}`);
+    } else {
+      comments = comments.concat(([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`)));
     }
   }
   if(comments.length > 0) {
     comments.unshift(`/**`);
     comments.push(`*/`);
     return comments.join('\r\n');
-  } else{
+  } else {
     return comments;
   }
 
