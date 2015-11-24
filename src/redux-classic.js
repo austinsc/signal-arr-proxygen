@@ -39,7 +39,6 @@ function _generateMethodComments(method, type) {
   } else {
     return comments;
   }
-
 }
 
 function _generateActionCreators(methods, server) {
