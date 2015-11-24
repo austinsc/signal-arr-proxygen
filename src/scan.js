@@ -33,7 +33,7 @@ public class Comment
         var returns = doc.SelectSingleNode(xpath + "/returns");
         if (returns != null)
             this.Returns = returns.InnerText.Trim();
-        var arguments = doc.SelectSingleNode(xpath + "/param");
+        var arguments = doc.SelectSingleNode(xpath + "/params");
         if(arguments != null)
             this.Arguments = arguments.OfType<XmlNode>().Select(q => new ArgumentComment() { Comment = q.InnerText.Trim(), Name = q.Attributes["name"].Value }).ToArray();
     }
@@ -67,6 +67,44 @@ public class Startup
         if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
             return true;
         return type.BaseType != null && IsDerivedOfGenericType(type.BaseType, genericType);
+    }
+    private static readonly Type[] _numberTypes = new[] { typeof(byte), typeof(short), typeof(int), typeof(long), typeof(float), typeof(decimal), typeof(double) };
+    private static readonly Type[] _dateTypes = new[] { typeof(DateTime), typeof(DateTimeOffset) };
+
+    private static string MapToJavaScriptType(Type type)
+    {
+      if (typeof(System.Collections.IEnumerable).IsAssignableFrom(type))
+      {
+        return "Array";
+      }
+      if (!type.IsPrimitive && !(type == typeof(string)))
+      {
+        return "Object";
+      }
+      if (type == typeof(string))
+      {
+        return "String";
+      }
+      if (_numberTypes.Contains(type))
+      {
+        return "Number";
+      }
+      if (_dateTypes.Contains(type))
+      {
+        return "Date";
+      }
+        return type.Name;
+    }
+
+    static string GetReturnType(MethodInfo y)
+    {
+      if (y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void))
+      {
+        if (IsDerivedOfGenericType(y.ReturnParameter.ParameterType, typeof(Task<>)))
+          return MapToJavaScriptType(y.ReturnParameter.ParameterType.GenericTypeArguments.First());
+      return MapToJavaScriptType(y.ReturnParameter.ParameterType);
+      }
+      return null;
     }
 
     public async Task<object> Invoke(object input)
@@ -111,14 +149,14 @@ public class Startup
                 Name = y.Name,
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
-                Returns = (y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)) ? y.ReturnParameter.ParameterType.Name : null
+                Returns = GetReturnType(y)
             }).ToArray(),
             Client = x.BaseType.GenericTypeArguments.First().GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
                 Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + y.DeclaringType.FullName + "." + y.Name + "')]"),
-                Returns = (y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void)) ? y.ReturnParameter.ParameterType.Name : null
+                Returns = GetReturnType(y)
             }).ToArray()
         }).ToArray();
     }
