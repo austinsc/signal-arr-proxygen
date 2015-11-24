@@ -54,7 +54,6 @@ function _generateActionCreators(methods, server) {
     const camelAction = _.camelCase(upperType);
     const args = x.Arguments.join(', ');
     const sep = (args.length ? ', ' : '');
-    const comments = x.Comment;
     if(server) {
       return [
         `${_generateMethodComments(x, 'variable')}`,
