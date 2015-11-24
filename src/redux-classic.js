@@ -19,7 +19,6 @@ function _generateActionTypes(hubName, methods, server) {
 
 function _generateMethodComments(method, type) {
   let comments = [];
-  let argumentComments = [];
   if(method.Comment.Summary !== null) {
     comments.push(`* ${method.Comment.Summary}`)
   }
@@ -29,19 +28,18 @@ function _generateMethodComments(method, type) {
   if(method.Comment.Arguments !== null) {
     switch(type) {
       case 'response':
-        argumentComments.push(`* @params {string} response ${method.Comment.Arguments}`);
+        comments.push(`* @params {string} response ${method.Comment.Arguments}`);
         break;
       case 'error':
-        argumentComments.push(`* @params {string} error ${method.Comment.Arguments}`);
+        comments.push(`* @params {string} error ${method.Comment.Arguments}`);
         break;
       case 'request':
-        argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
+        comments = comments.concat(([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`)));
         break;
       case 'dispatch':
-        argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`));
+        comments = comments.concat(([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`)));
         break;
     }
-    comments = comments.concat(argumentComments);
   }
   if(comments.isEmpty) {
     return comments;
