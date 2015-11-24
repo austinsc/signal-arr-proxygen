@@ -17,6 +17,43 @@ function _generateActionTypes(hubName, methods, server) {
   }).join('\r\n');
 }
 
+function _generateMethodComments(method, type) {
+  let comments = [];
+  let argumentComments = [];
+  if(method.Comment !== null) {
+    if(method.Comment.Summary !== null) {
+      comments.push(`* ${method.Comment.Summary}`)
+    }
+    if(method.Returns) {
+      if(method.Comment.Returns !== null) {
+        comments.push(`* @returns {${typeof(method.Returns)}} ${method.Returns} ${method.Comment.Returns}`)
+      } else {
+        comments.push(`* @returns {${typeof(method.Returns)}} ${method.Returns} No comment found for this return statement.`)
+      }
+    }
+    if(method.Arguments !== null || type !== null) {
+        switch(type) {
+          case 'response':
+            argumentComments.push(`* @params {string} response ${method.Comment.Arguments || `No argument comment found.`}`);
+            break;
+          case 'error':
+            argumentComments.push(`* @params {string} error ${method.Comment.Arguments || `No argument comment found.`}`);
+            break;
+          case 'request':
+            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments || `No argument comment found.`}`));
+            break;
+          case 'dispatch':
+            argumentComments = ([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments || `No argument comment found.`}`));
+            break;
+        }
+      comments = comments.concat(argumentComments);
+    }
+  } else {
+    comments.push(` *No comments defined for this method.`);
+  }
+  return comments.join('\r\n');
+}
+
 function _generateActionCreators(methods, server) {
   return methods.map(x => {
     const upperType = toUpperUnderscore(x.Name);
@@ -27,33 +64,25 @@ function _generateActionCreators(methods, server) {
     if(server) {
       return [
         `/**`,
-        `* ${comments.Summary}`,
-        `* @returns ${comments.Returns}`,
-        `* ${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `${_generateMethodComments(x,'request')}`,
         `*/`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
         `}`,
         `/**`,
-        `* ${comments.Summary}`,
-        `* @returns ${comments.Returns}`,
-        `${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `${_generateMethodComments(x,'response')}`,
         `*/`,
         `export function ${camelAction}Response(response){`,
         `  return {type: ${upperType}_RESPONSE, response};`,
         `}`,
         `/**`,
-        `* ${comments.Summary}`,
-        `* @returns ${comments.Returns}`,
-        `* ${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `${_generateMethodComments(x,'error')}`,
         `*/`,
         `export function ${camelAction}Error(error){`,
         `  return {type: ${upperType}_ERROR, error};`,
         `}`,
         `/**`,
-        `* ${comments.Summary}`,
-        `* @returns ${comments.Returns}`,
-        `* ${[].map.call(x.Arguments, arg => `@params {${typeof(arg)}} ${arg} ${comments.Arguments}`).join('\r\n* ')}`,
+        `${_generateMethodComments(x,'dispatch')}`,
         `*/`,
         `export function ${camelAction}(${args}){`,
         `  return (dispatch) => {`,
