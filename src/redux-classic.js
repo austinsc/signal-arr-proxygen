@@ -32,12 +32,22 @@ function _generateActionCreators(methods, server) {
     const sep = (args.length ? ', ' : '');
     if(server) {
       return [
+        `/**`,
+        `* ${x.Comment.Summary || 'No summary defined.'}`,
+        `${x.Arguments.map(arg => `* params {${arg.Type}} ${arg.Name} ${x.Comment.Arguments[arg.Name] || `No argument comment defined`}`)}`,
+        `*/`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
         `}`,
+        `/**`,
+        `* ${x.Comment.Summary || 'No summary defined.'}`,
+        `*/`,
         `export function ${camelAction}Response(response){`,
         `  return {type: ${upperType}_RESPONSE, response};`,
         `}`,
+        `/**`,
+        `* ${x.Comment.Summary || 'No summary defined.'}`,
+        `*/`,
         `export function ${camelAction}Error(error){`,
         `  return {type: ${upperType}_ERROR, error};`,
         `}`,
