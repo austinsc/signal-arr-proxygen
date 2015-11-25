@@ -42,7 +42,7 @@ export function processor(argv) {
   }
 
   if(argv.output === 'console') {
-    return promise
+    return promise = promise
       .then(results => {
         if(argv.format === 'pretty') {
           argv.print(results.r);

@@ -29,7 +29,7 @@ function _generateMethodComments(method, type) {
     if(type === 'response' || type === 'error') {
       comments.push(`* @params {string} ${type} ${method.Comment.Arguments}`);
     } else {
-      comments = comments.concat(([].map.call(method.Arguments, arg => `* @params {${typeof(arg)}} ${arg} ${method.Comment.Arguments}`)));
+      comments = comments.concat((method.Arguments.map(arg => `* @params {${arg.Type}} ${arg.Name} ${method.Comment.Arguments[arg.Name]}`)));
     }
   }
   if(comments.length > 0) {
@@ -45,7 +45,7 @@ function _generateActionCreators(methods, server) {
   return methods.map(x => {
     const upperType = toUpperUnderscore(x.Name);
     const camelAction = _.camelCase(upperType);
-    const args = x.Arguments.join(', ');
+    const args = x.Arguments.map(y => y.Name).join(', ');
     const sep = (args.length ? ', ' : '');
     if(server) {
       return [
@@ -91,7 +91,7 @@ function _generateSelfRegistration(hub) {
   const camelHub = _.camelCase(hub.Name);
   const assignments = hub.Client.map(x => {
     const camelAction = _.camelCase(x.Name);
-    const args = x.Arguments.join(', ');
+    const args = x.Arguments.map(y => y.Name).join(', ');
     return `  client.${camelAction} = (${args}) => dispatch(${camelAction}(${args}));`
   }).join('\r\n');
   return [

@@ -3,9 +3,13 @@ import path from 'path';
 import Font from 'cfonts';
 import yargs from 'yargs';
 import watchr from 'watchr';
+import PrettyError from 'pretty-error';
 import {processor} from './processor';
 import {validate} from './utilities';
 import interactive from './interactive';
+
+var pe = new PrettyError();
+pe.start();
 
 let argv = yargs
   .usage('Usage: $0 <command> <assembly> [options]')
@@ -80,17 +84,17 @@ if(argv._.length < 2) {
   argv.writeFile = fs.writeFile;
   argv.readFile = fs.readFile;
   if(argv.command === 'interactive') {
-    interactive(argv).catch(console.error);
+    interactive(argv).catch(err => console.log(pe.render(err)));
   } else {
     if(argv.watch) {
       watchr.watch({
         path: argv.assembly,
         listener() {
-          processor(argv).catch(console.error);
+          processor(argv).catch(err => console.log(pe.render(err)));
         }
       });
     }
-    processor(argv).catch(console.error);
+    processor(argv).catch(err => console.log(pe.render(err)));
   }
 }
 

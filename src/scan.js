@@ -7,9 +7,16 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
 
+
+public class Argument
+{
+    public string Name { get; set; }
+    public string Type { get; set; }
+}
 
 public class ArgumentComment
 {
@@ -34,18 +41,22 @@ public class Comment
             this.Returns = returns.InnerText.Trim();
         var arguments = doc.SelectNodes(xpath + "/param");
         if(arguments != null)
-            this.Arguments = arguments.OfType<XmlNode>().Select(q => new ArgumentComment() { Comment = q.InnerText.Trim(), Name = q.Attributes["name"].Value }).ToArray();
+        {
+            this.Arguments = new Dictionary<string, string>();
+            foreach(var arg in arguments.OfType<XmlNode>())
+                this.Arguments[arg.Attributes["name"].Value] = arg.InnerText.Trim();
+        }
     }
 
     public string Summary { get; set; }
     public string Returns { get; set; }
-    public ArgumentComment[] Arguments { get; set; }
+    public Dictionary<string, string> Arguments { get; set; }
 }
 
 public class Method
 {
     public string Name { get; set; }
-    public string[] Arguments { get; set; }
+    public Argument[] Arguments { get; set; }
     public string Returns { get; set; }
     public Comment Comment { get; set; }
 
@@ -99,9 +110,9 @@ public class Startup
     {
       if (y.ReturnParameter != null && y.ReturnParameter.ParameterType != typeof(Task) && y.ReturnParameter.ParameterType != typeof(void))
       {
-        if (IsDerivedOfGenericType(y.ReturnParameter.ParameterType, typeof(Task<>)))
-          return MapToJavaScriptType(y.ReturnParameter.ParameterType.GenericTypeArguments.First());
-      return MapToJavaScriptType(y.ReturnParameter.ParameterType);
+          if (IsDerivedOfGenericType(y.ReturnParameter.ParameterType, typeof(Task<>)))
+              return MapToJavaScriptType(y.ReturnParameter.ParameterType.GenericTypeArguments.First());
+          return MapToJavaScriptType(y.ReturnParameter.ParameterType);
       }
       return null;
     }
@@ -147,13 +158,13 @@ public class Startup
             {
                 Name = y.Name,
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
-                Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
+                Arguments = y.GetParameters().Select(z => new Argument() { Name = z.Name, Type = MapToJavaScriptType(z.ParameterType) }).ToArray(),
                 Returns = GetReturnType(y)
             }).ToArray(),
             Client = x.BaseType.GenericTypeArguments.First().GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
-                Arguments = y.GetParameters().Select(z => z.Name).ToArray(),
+                Arguments = y.GetParameters().Select(z => new Argument() { Name = z.Name, Type = MapToJavaScriptType(z.ParameterType) }).ToArray(),
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + y.DeclaringType.FullName + "." + y.Name + "')]"),
                 Returns = GetReturnType(y)
             }).ToArray()
