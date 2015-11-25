@@ -17,28 +17,11 @@ function _generateActionTypes(hubName, methods, server) {
   }).join('\r\n');
 }
 
-function _generateMethodComments(method, type) {
-  let comments = [];
-  if(method.Comment.Summary !== null) {
-    comments.push(`* ${method.Comment.Summary}`)
-  }
-  if(method.Comment.Returns !== null) {
-    comments.push(`* @returns {${method.Returns}} ${method.Comment.Returns}`)
-  }
-  if(method.Comment.Arguments !== null) {
-    if(type === 'response' || type === 'error') {
-      comments.push(`* @params {string} ${type} ${method.Comment.Arguments}`);
-    } else {
-      comments = comments.concat((method.Arguments.map(arg => `* @params {${arg.Type}} ${arg.Name} ${method.Comment.Arguments[arg.Name]}`)));
-    }
-  }
-  if(comments.length > 0) {
-    comments.unshift(`/**`);
-    comments.push(`*/`);
-    return comments.join('\r\n');
-  } else {
-    return comments;
-  }
+function _generateMethodComments(method) {
+  return [`/**`,
+    `* ${method.Comment.Summary || 'No summary defined.'}`,
+    ...method.Arguments.map(arg => `* @params {${arg.Type}} ${arg.Name} ${method.Comment.Arguments[arg.Name] || 'No argument comment defined.'}`),
+    `*/`].join('\r\n');
 }
 
 function _generateActionCreators(methods, server) {
@@ -49,19 +32,16 @@ function _generateActionCreators(methods, server) {
     const sep = (args.length ? ', ' : '');
     if(server) {
       return [
-        `${_generateMethodComments(x, 'variable')}`,
         `export function ${camelAction}Request(${args}){`,
         `  return {type: ${upperType}_REQUEST${sep}${args}};`,
         `}`,
-        `${_generateMethodComments(x, 'response')}`,
         `export function ${camelAction}Response(response){`,
         `  return {type: ${upperType}_RESPONSE, response};`,
         `}`,
-        `${_generateMethodComments(x, 'error')}`,
         `export function ${camelAction}Error(error){`,
         `  return {type: ${upperType}_ERROR, error};`,
         `}`,
-        `${_generateMethodComments(x, 'variable')}`,
+        `${_generateMethodComments(x)}`,
         `export function ${camelAction}(${args}){`,
         `  return (dispatch) => {`,
         `    const bound = {`,
@@ -78,7 +58,7 @@ function _generateActionCreators(methods, server) {
       ].join('\r\n');
     } else {
       return [
-        `${_generateMethodComments(x, 'variable')}`,
+        `${_generateMethodComments(x)}`,
         `export function ${camelAction}(${args}){`,
         `  return {type: ${upperType}${sep}${args}};`,
         `}`
