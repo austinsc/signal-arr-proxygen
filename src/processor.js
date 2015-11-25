@@ -8,13 +8,10 @@ import redux from './redux';
 import reduxClassic from './redux-classic';
 
 export function processor(argv) {
-  argv.print(`Scanning ${argv.assembly}...`);
-
   let promise = argv.hubs
     ? new Promise(resolve => resolve(argv.hubs))
     : scan(argv.assembly);
 
-  argv.print(`Generating output...`);
   switch(argv.format) {
     case 'json':
       promise = promise

@@ -26,14 +26,13 @@ public class Comment
 
     public Comment(XmlDocument doc, string xpath)
     {
-    Console.WriteLine(xpath);
         var summary = doc.SelectSingleNode(xpath + "/summary");
         if(summary != null)
             this.Summary = summary.InnerText.Trim();
         var returns = doc.SelectSingleNode(xpath + "/returns");
         if (returns != null)
             this.Returns = returns.InnerText.Trim();
-        var arguments = doc.SelectSingleNode(xpath + "/params");
+        var arguments = doc.SelectNodes(xpath + "/param");
         if(arguments != null)
             this.Arguments = arguments.OfType<XmlNode>().Select(q => new ArgumentComment() { Comment = q.InnerText.Trim(), Name = q.Attributes["name"].Value }).ToArray();
     }
