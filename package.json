@@ -11,8 +11,8 @@
   "repository": "https://github.com/RoviSys/signal-arr-proxygen",
   "bin": "bin/index.js",
   "authors": [
-    "Stephen C. Austin",
-    "Brandon Alanskas"
+    "Stephen C. Austin <stephen.austin@rovisys.com>",
+    "Brandon Alanskas <brandon.alanskas@rovisys.com>"
   ],
   "license": "MIT",
   "dependencies": {
