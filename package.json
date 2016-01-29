@@ -16,7 +16,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "babel": "^5.8.34",
+    "babel": "^6.3.26",
     "cardinal": "^0.6.0",
     "cfonts": "0.0.13",
     "edge": "^5.0.0",
@@ -30,6 +30,7 @@
     "yargs": "^3.29.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.4.5",
     "babel-core": "^6.2.4",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.2.4",
     "babel-plugin-undeclared-variables-check": "^6.2.4",
