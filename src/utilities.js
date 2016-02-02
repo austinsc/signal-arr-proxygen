@@ -22,7 +22,7 @@ export function writeFile(argv, file, data, section) {
           if(contents && contents.match(regex)) {
             data = contents.replace(regex, data);
           } else {
-            return reject(`Unable to update ${file}, existing content not found.`)
+            return reject(`Unable to update ${file}, existing content not found.`);
           }
         }
         print(`Writing ${file}...`);
@@ -84,6 +84,6 @@ export function validate(argv) {
 
     return true;
   } else {
-    throw new Error('Avast! There be no output booty to plunder! (you didn\'t specify an output parameter -o --output)')
+    throw new Error('Avast! There be no output booty to plunder! (you didn\'t specify an output parameter -o --output)');
   }
 }

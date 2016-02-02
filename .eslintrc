@@ -1,6 +1,6 @@
 parser: 'babel-eslint'
 
-plugins: ['babel', 'private-variables']
+plugins: ['babel']
 
 env:
   node: true
@@ -33,7 +33,7 @@ rules:
   space-unary-ops: 0
   babel/object-shorthand: 1
   babel/new-cap: 0
-  private-variables/no-access: [2, class-only]
+
 
 ecmaFeatures:
   modules: true
