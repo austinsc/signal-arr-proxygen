@@ -64,7 +64,7 @@ function _generateSelfRegistration(hub, proxy) {
   const assignments = hub.Client.map(x => {
     const camelAction = _.camelCase(x.Name);
     const args = x.Arguments.join(', ');
-    return `  ${proxy}.${camelAction} = (${args}) => dispatch(${camelAction}(${args}));`
+    return `  ${proxy}.${camelAction} = (${args}) => dispatch(${camelAction}(${args}));`;
   }).join('\r\n');
   return [
     `export function ${camelHub}(dispatch) {`,

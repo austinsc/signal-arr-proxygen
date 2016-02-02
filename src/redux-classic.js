@@ -82,7 +82,7 @@ function _generateSelfRegistration(hub) {
   const assignments = hub.Client.map(x => {
     const camelAction = _.camelCase(x.Name);
     const args = x.Arguments.map(y => y.Name).join(', ');
-    return `  client.${camelAction} = (${args}) => dispatch(${camelAction}(${args}));`
+    return `  client.${camelAction} = (${args}) => dispatch(${camelAction}(${args}));`;
   }).join('\r\n');
   return [
     `export function ${camelHub}(dispatch) {`,
