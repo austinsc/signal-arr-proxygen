@@ -4,8 +4,8 @@
   "description": "Static Javascript Hub Proxy generator tool for use with SignalR",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/babel src -s -w -d dist",
-    "build": "./node_modules/.bin/babel src -s -d dist",
+    "dev": "babel src -s -w -d dist",
+    "build": "babel src -s -d dist",
     "test": "echo \"Wo test specified\" && exit 0"
   },
   "repository": "https://github.com/RoviSys/signal-arr-proxygen",
@@ -36,6 +36,8 @@
     "babel-plugin-undeclared-variables-check": "^6.2.4",
     "babel-preset-es2015": "^6.2.4",
     "babel-preset-stage-0": "^6.2.4",
-    "docpress": "^0.6.10"
+    "chai": "^3.5.0",
+    "docpress": "^0.6.10",
+    "mocha": "^2.4.5"
   }
 }
