@@ -4,8 +4,7 @@ import del  from 'del';
 import glob  from 'glob';
 import path  from 'path';
 import {Instrumenter} from 'isparta';
-import webpack from 'webpack';
-import webpackStream from 'webpack-stream';
+import babel from 'gulp-babel';
 import source  from 'vinyl-source-stream';
 
 import mochaGlobals from './test/setup/.globals';
@@ -54,20 +53,13 @@ function lintGulpfile() {
 }
 
 function build() {
-  return gulp.src(path.join('src','.js'))
+  return gulp.src('src/*.js')
     .pipe($.plumber())
-    .pipe(webpackStream({
-      module: {
-        loaders: [
-          { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
-        ]
-      },
-      devtool: 'source-map'
-    }))
+    .pipe(babel())
     .pipe(gulp.dest(destinationFolder))
     .pipe($.filter(['*', '!**/*.js.map']))
     .pipe($.rename(exportFileName + '.min.js'))
-    .pipe($.sourcemaps.init({ loadMaps: true }))
+    .pipe($.sourcemaps.init({loadMaps: true}))
     .pipe($.uglify())
     .pipe($.sourcemaps.write('./'))
     .pipe(gulp.dest(destinationFolder));
@@ -94,7 +86,7 @@ function test() {
 function coverage(done) {
   _registerBabel();
   gulp.src(['src/**/*.js'])
-    .pipe($.istanbul({ instrumenter: Instrumenter }))
+    .pipe($.istanbul({instrumenter: Instrumenter}))
     .pipe($.istanbul.hookRequire())
     .on('finish', () => {
       return test()
@@ -133,19 +125,19 @@ function testBrowser() {
       module: {
         loaders: [
           // This is what allows us to author in future JavaScript
-          { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
+          {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
           // This allows the test setup scripts to load `package.json`
-          { test: /\.json$/, exclude: /node_modules/, loader: 'json-loader' }
+          {test: /\.json$/, exclude: /node_modules/, loader: 'json-loader'}
         ]
       },
       plugins: [
         // By default, webpack does `n=>n` compilation with entry files. This concatenates
         // them into a single chunk.
-        new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })
+        new webpack.optimize.LimitChunkCountPlugin({maxChunks: 1})
       ],
       devtool: 'inline-source-map'
     }, null, function() {
-      if (firstBuild) {
+      if(firstBuild) {
         $.livereload.listen({port: 35729, host: 'localhost', start: true});
         var watcher = gulp.watch(watchFiles, ['lint']);
       } else {
