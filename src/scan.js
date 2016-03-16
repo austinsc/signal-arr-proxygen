@@ -159,7 +159,7 @@ public class Startup
             xml.Load(docPath);
         var hubType = Type.ReflectionOnlyGetType("Microsoft.AspNet.SignalR.Hub, Microsoft.AspNet.SignalR.Core", true, true);
         var hubGenericType = Type.ReflectionOnlyGetType("Microsoft.AspNet.SignalR.Hub`1, Microsoft.AspNet.SignalR.Core", false, true);
-        return ass.DefinedTypes.Where(x => IsDerivedOfGenericType(x, hubGenericType)).Select(x => new Hub
+        return ass.DefinedTypes.Where(x => !x.IsAbstract && IsDerivedOfGenericType(x, hubGenericType)).Select(x => new Hub
         {
             Name = x.Name,
             Comment = new Comment(xml, "//member[@name='T:" + x.FullName + "']"),
