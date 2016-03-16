@@ -15,7 +15,12 @@ export function writeFile(argv, file, data, section) {
       // Update
       readFile(file, (err, buffer) => {
         if(err) {
-          return reject(err);
+          return writeFile(file, data, err2 => {
+            if(err2) {
+              return reject(err2);
+            }
+            resolve(data);
+          });
         }
         if(buffer) {
           const contents = buffer.toString();

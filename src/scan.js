@@ -78,6 +78,15 @@ public class Startup
             return true;
         return type.BaseType != null && IsDerivedOfGenericType(type.BaseType, genericType);
     }
+    static Type GetDerivedGenericTypeParameter(Type type, Type genericType)
+    {
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
+            return type.GenericTypeArguments.First();
+        return type.BaseType != null
+            ? GetDerivedGenericTypeParameter(type.BaseType, genericType)
+            : null;
+    }
+
     private static readonly Type[] _numberTypes = new[] { typeof(byte), typeof(short), typeof(int), typeof(long), typeof(float), typeof(decimal), typeof(double) };
     private static readonly Type[] _dateTypes = new[] { typeof(DateTime), typeof(DateTimeOffset) };
 
@@ -154,14 +163,14 @@ public class Startup
         {
             Name = x.Name,
             Comment = new Comment(xml, "//member[@name='T:" + x.FullName + "']"),
-            Server = x.DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
+            Server = x.GetMethods().Where(y => y.IsPublic && !y.IsStatic && y.DeclaringType != hubType && y.DeclaringType != typeof(object) && y.Name != "OnConnected" && !(y.DeclaringType.IsGenericType && y.DeclaringType.GetGenericTypeDefinition() == hubGenericType)).Select(y => new Method
             {
                 Name = y.Name,
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
                 Arguments = y.GetParameters().Select(z => new Argument() { Name = z.Name, Type = MapToJavaScriptType(z.ParameterType) }).ToArray(),
                 Returns = GetReturnType(y)
             }).ToArray(),
-            Client = x.BaseType.GenericTypeArguments.First().GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
+            Client = GetDerivedGenericTypeParameter(x, hubGenericType).GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
             {
                 Name = y.Name,
                 Arguments = y.GetParameters().Select(z => new Argument() { Name = z.Name, Type = MapToJavaScriptType(z.ParameterType) }).ToArray(),

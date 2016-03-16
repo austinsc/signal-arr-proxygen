@@ -60,7 +60,7 @@ function _generateActionCreators(methods, server) {
         `      ${camelAction}Error: (error) => dispatch(${camelAction}Error(error))`,
         `    };`,
         `    bound.${camelAction}Request(${args});`,
-        `    server.${camelAction}(${args})`,
+        `    return server.${camelAction}(${args})`,
         `      .then(bound.${camelAction}Response)`,
         `      .fail(bound.${camelAction}Error);`,
         `  };`,
