@@ -25,7 +25,7 @@
     "cfonts": "0.0.13",
     "edge": "^5.0.0",
     "inquirer": "^0.12.0",
-    "lodash": "^4.2.1",
+    "lodash": "^4.7.0",
     "mocha": "^2.3.4",
     "pretty-error": "^2.0.0",
     "prettyjson": "^1.1.3",
