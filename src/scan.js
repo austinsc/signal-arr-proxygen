@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -167,7 +168,7 @@ public class Startup
             {
                 Name = y.Name,
                 Comment = new Comment(xml, "//member[starts-with(@name, 'M:" + x.FullName + "." + y.Name + "')]"),
-                Arguments = y.GetParameters().Select(z => new Argument() { Name = z.Name, Type = MapToJavaScriptType(z.ParameterType) }).ToArray(),
+                Arguments = y.GetParameters().Where(z => z.ParameterType != typeof(CancellationToken)).Select(z => new Argument() { Name = z.Name, Type = MapToJavaScriptType(z.ParameterType) }).ToArray(),
                 Returns = GetReturnType(y)
             }).ToArray(),
             Client = GetDerivedGenericTypeParameter(x, hubGenericType).GetTypeInfo().DeclaredMethods.Where(y => y.IsPublic && !y.IsStatic && y.GetBaseDefinition() == y).Select(y => new Method
