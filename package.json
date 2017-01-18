@@ -47,7 +47,7 @@
     "babel-register": "^6.3.13",
     "chai": "^3.5.0",
     "del": "^2.2.0",
-    "eslint-plugin-babel": "^3.0.0",
+    "eslint-plugin-babel": "^4.0.1",
     "docpress": "^0.6.10",
     "glob": "^7.0.3",
     "gulp": "^3.9.0",
