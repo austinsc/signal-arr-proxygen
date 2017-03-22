@@ -103,5 +103,5 @@ export default function(hub, options = {}) {
     '',
     `/** End ${hub.Name} **/`,
     ''
-  ].join('\r\n');
+  ].join('\r\n').trim();
 }
