@@ -1,6 +1,6 @@
 {
   "name": "signal-arr-proxygen",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Static Javascript Hub Proxy generator tool for use with SignalR",
   "main": "dist/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "release": "./node_modules/.bin/release-it -u -n -m \"Release v%s\""
   },
   "repository": "https://github.com/RoviSys/signal-arr-proxygen",
-  "bin": "bin/index.js",
+  "bin": "bin/proxygen.js",
   "authors": [
     "Stephen C. Austin <stephen.austin@rovisys.com>",
     "Brandon Alanskas <brandon.alanskas@rovisys.com>"
