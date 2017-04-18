@@ -21,7 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "cardinal": "^0.6.0",
+    "cardinal": "^0.7.0",
     "cfonts": "0.0.13",
     "edge": "^5.0.0",
     "inquirer": "^0.12.0",
