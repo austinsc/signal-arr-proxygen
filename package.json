@@ -37,7 +37,7 @@
     "babel-cli": "^6.4.5",
     "babel-core": "^6.3.26",
     "babel-eslint": "^6.0.0",
-    "babel-loader": "^6.2.0",
+    "babel-loader": "^7.0.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.7.4",
     "babel-plugin-undeclared-variables-check": "^6.2.4",
