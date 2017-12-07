@@ -1,6 +1,6 @@
 {
   "name": "signal-arr-proxygen",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "Static Javascript Hub Proxy generator tool for use with SignalR",
   "main": "./dist/index.js",
   "scripts": {
