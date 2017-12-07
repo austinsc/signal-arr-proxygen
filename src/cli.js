@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import Font from 'cfonts';
+import CFonts from 'cfonts';
 import yargs from 'yargs';
 import watchr from 'watchr';
 import {processor} from './processor';
@@ -71,7 +71,7 @@ let argv = yargs
   .argv;
 
 if(argv._.length < 2) {
-  new Font({text: ' signal-arr', colors: ['red', 'white'], maxLength: '11'});
+  CFonts.say(' signal-arr', {colors: ['red', 'white'], maxLength: '11'});
   yargs.showHelp('log');
 } else {
   argv.command = argv._[0];

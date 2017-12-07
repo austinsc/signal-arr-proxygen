@@ -1,6 +1,3 @@
-import edge from 'edge';
-
-export const reflect = edge.func(function() {/*
 #r "System.Xml.dll"
 #r "System.Reflection.dll"
 using System;
@@ -182,17 +179,4 @@ public class Startup
             }).ToArray()
         }).ToArray();
     }
-}
-*/
-});
-
-export function scan(assembly) {
-  return new Promise((resolve, reject) => {
-    reflect(assembly, (error, result) => {
-      if(error) {
-        return reject(error);
-      }
-      resolve(result);
-    });
-  });
 }
