@@ -159,12 +159,13 @@ public class Startup
         if (File.Exists(docPath))
             xml.Load(docPath);
         var hubType = Type.ReflectionOnlyGetType("Microsoft.AspNet.SignalR.Hub, Microsoft.AspNet.SignalR.Core", true, true);
+        var hubBaseType = Type.ReflectionOnlyGetType("Microsoft.AspNet.SignalR.HubBase, Microsoft.AspNet.SignalR.Core", true, true);
         var hubGenericType = Type.ReflectionOnlyGetType("Microsoft.AspNet.SignalR.Hub`1, Microsoft.AspNet.SignalR.Core", true, true);
         return ass.DefinedTypes.Where(x => !x.IsAbstract && IsDerivedOfGenericType(x, hubGenericType)).Select(x => new Hub
         {
             Name = x.Name,
             Comment = new Comment(xml, "//member[@name='T:" + x.FullName + "']"),
-            Server = x.GetMethods().Where(y => y.IsPublic && !y.IsStatic && y.DeclaringType != hubType && y.DeclaringType != typeof(object) && y.Name != "OnConnected" && !(y.DeclaringType.IsGenericType && y.DeclaringType.GetGenericTypeDefinition() == hubGenericType))
+            Server = x.GetMethods().Where(y => y.IsPublic && !y.IsStatic && y.DeclaringType != hubType && y.DeclaringType != typeof(object) && y.DeclaringType != hubBaseType && !(y.DeclaringType.IsGenericType && y.DeclaringType.GetGenericTypeDefinition() == hubGenericType))
             .Select(y => new Method
             {
                 Name = y.Name,
