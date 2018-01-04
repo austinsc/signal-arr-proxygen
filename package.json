@@ -24,7 +24,7 @@
     "cardinal": "1.0.0",
     "cfonts": "1.1.3",
     "edge": "7.10.1",
-    "inquirer": "4.0.1",
+    "inquirer": "4.0.2",
     "lodash": "^4.2.1",
     "pretty-error": "^2.0.0",
     "prettyjson": "^1.1.3",
