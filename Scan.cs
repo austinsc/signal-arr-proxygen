@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
-
 public class Argument
 {
     public string Name { get; set; }
@@ -57,7 +56,6 @@ public class Method
     public Argument[] Arguments { get; set; }
     public string Returns { get; set; }
     public Comment Comment { get; set; }
-
 }
 
 public class Hub
