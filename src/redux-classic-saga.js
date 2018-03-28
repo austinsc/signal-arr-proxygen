@@ -9,7 +9,8 @@ function _generateActionTypes(hubName, methods, server) {
       return [
         `export const ${upper}_REQUEST = '${hubUpper}::${upper}_REQUEST';`,
         `export const ${upper}_RESPONSE = '${hubUpper}::${upper}_RESPONSE';`,
-        `export const ${upper}_ERROR = '${hubUpper}::${upper}_ERROR';`
+        `export const ${upper}_ERROR = '${hubUpper}::${upper}_ERROR';`,
+        `export const ${upper}_ABORT = '${hubUpper}::${upper}_ABORT';`
       ].join('\r\n');
     } else {
       return `export const ${upper} = '${hubUpper}::${upper}';`;
@@ -64,8 +65,24 @@ function _generateActionCreators(methods, server) {
         `      .then(bound.${camelAction}Response)`,
         `      .fail(bound.${camelAction}Error);`,
         `  };`,
-        `}`
+        `}`,
+        `${_generateMethodComments(x)}`,
+        `export function* ${camelAction}(${args}){`,
+        `  return (dispatch) => {`,
+        `    const bound = {`,
+        `      ${camelAction}Request: (${args}) => dispatch(${camelAction}Request(${args})),`,
+        `      ${camelAction}Response: (response) => dispatch(${camelAction}Response(response)),`,
+        `      ${camelAction}Error: (error) => dispatch(${camelAction}Error(error))`,
+        `    };`,
+        `    bound.${camelAction}Request(${args});`,
+        `    return server.${camelAction}(${args})`,
+        `      .then(bound.${camelAction}Response)`,
+        `      .fail(bound.${camelAction}Error);`,
+        `  };`,
+        `}`,
+        '',
       ].join('\r\n');
+
     } else {
       return [
         `${_generateMethodComments(x)}`,
